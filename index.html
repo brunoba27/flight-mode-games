@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101b32">
+<meta name="description" content="FLIGHT MODE GAMES — an offline team championship.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>FLIGHT MODE GAMES</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1426;--panel:#14233d;--panel2:#1c3152;--ink:#f4f7ff;--muted:#a9bad8;--accent:#78a9ff;--gold:#ffd36b;--line:#30496e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c3559 0,#0b1426 55%);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:22px 18px 12px;max-width:920px;margin:auto}main{max-width:920px;margin:auto;padding:0 16px 48px}
+.kicker{color:#a9c5ff;font-size:.75rem;letter-spacing:.16em;font-weight:800}.brand{font-size:clamp(2rem,8vw,3.7rem);line-height:.98;letter-spacing:-.055em;margin:8px 0}.sub{color:var(--muted);margin:8px 0 0}
+.status{display:inline-flex;align-items:center;gap:7px;border:1px solid #42785e;background:#123526;color:#a9f0c8;border-radius:99px;padding:5px 10px;font-size:.75rem;font-weight:800}
+.dot{width:7px;height:7px;background:#61e39a;border-radius:50%}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 0 16px;position:sticky;top:0;background:#0b1426ee;z-index:5}
+nav button{white-space:nowrap;background:#172943;border:1px solid var(--line);color:var(--muted);padding:10px 13px;border-radius:12px;font-weight:700}
+nav button.active{background:#dce9ff;color:#10203a;border-color:#dce9ff}
+.panel{background:linear-gradient(145deg,#172945,#112039);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 12px 32px #0002}
+h2{font-size:1.35rem;margin:0 0 12px}h3{margin:0 0 8px;font-size:1.05rem}
+.muted{color:var(--muted)}.small{font-size:.85rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.stat{background:#0c192d;border:1px solid var(--line);border-radius:15px;padding:14px}.stat strong{display:block;font-size:1.7rem}
+button,.btn{cursor:pointer;border:0;border-radius:13px;padding:12px 15px;background:#dce9ff;color:#10203a;font-weight:800;font-size:.95rem}
+button.secondary{background:#223958;color:#edf4ff;border:1px solid #3a557b}
+button.ghost{background:transparent;color:#c4d5f2;border:1px solid #3a557b}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{width:100%;background:#09172b;border:1px solid #385174;color:#fff;padding:13px;border-radius:12px;font:inherit;margin:6px 0 12px}
+label{font-size:.85rem;color:#c3d3ed;font-weight:700;display:block}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.game-card{background:#10203a;border:1px solid var(--line);padding:14px;border-radius:16px}
+.question{font-size:1.15rem;font-weight:800;margin:10px 0 16px}
+.answer{display:block;width:100%;text-align:left;margin:8px 0;background:#203958;color:#fff;border:1px solid #3b587e}
+.answer.correct{background:#174b38;border-color:#45b889}.answer.wrong{background:#542b36;border-color:#c46a7a}
+.teamrow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #2a4162}.teamrow:last-child{border:0}
+.pill{background:#253e60;color:#cfe0ff;border-radius:99px;padding:3px 9px;font-size:.75rem}
+.hidden{display:none!important}.progress{height:8px;background:#0b1729;border-radius:9px;overflow:hidden}.progress>i{display:block;height:100%;background:linear-gradient(90deg,#6c9cff,#9ee6d0);width:0}
+footer{color:#8297b8;text-align:center;padding:25px;font-size:.78rem}
+#qrCanvas{max-width:100%;background:white;padding:10px;border-radius:12px}
+.notice{border-left:3px solid var(--gold);padding:10px 12px;background:#332c1c;color:#f8e5ad;border-radius:8px;font-size:.86rem}
+@media(min-width:700px){header{padding-top:34px}.panel{padding:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">THE 10,000 FEET CHAMPIONSHIP</div>
+  <div class="brand">FLIGHT MODE<br>GAMES</div>
+  <p class="sub">One team. Ten squads. A thousand memories.</p>
+  <p><span class="status"><i class="dot"></i> OFFLINE-FIRST EDITION</span></p>
+</header>
+<main>
+<nav aria-label="Main navigation">
+<button class="active" data-tab="home">Home</button><button data-tab="play">Play</button><button data-tab="teams">Teams</button><button data-tab="score">My score & QR</button><button data-tab="guide">Offline guide</button>
+</nav>
+
+<section id="home" class="tab">
+ <div class="panel">
+  <h2>Welcome aboard, champion.</h2>
+  <p class="muted">Choose your nickname, join your automatically assigned squad and play the challenges. Your scores stay on this device.</p>
+  <label for="nickname">Your nickname (no real names)</label>
+  <input id="nickname" maxlength="18" placeholder="e.g. Cloud Ninja" autocomplete="nickname">
+  <label for="team">Your squad</label>
+  <select id="team"></select>
+  <div class="actions"><button id="saveProfile">Save player profile</button><button class="secondary" id="randomTeam">Assign random squad</button></div>
+  <p id="profileMsg" class="small muted" aria-live="polite"></p>
+ </div>
+ <div class="grid">
+  <div class="stat"><span class="muted small">Your points</span><strong id="homePoints">0</strong></div>
+  <div class="stat"><span class="muted small">Challenges played</span><strong id="homePlayed">0</strong></div>
+  <div class="stat"><span class="muted small">Your squad</span><strong id="homeTeam">—</strong></div>
+ </div>
+ <div class="panel">
+  <h2>Championship rules</h2>
+  <ul class="muted">
+   <li>Play individually; your device saves your score.</li>
+   <li>Use your nickname, not your work identity.</li>
+   <li>Keep sound and vibration off.</li>
+   <li>No network, hotspot, mobile data or Bluetooth is needed by this game.</li>
+   <li>Only play when the crew's instructions and cabin conditions allow it.</li>
+  </ul>
+ </div>
+</section>
+
+<section id="play" class="tab hidden">
+ <div class="panel">
+  <h2>Choose your challenge</h2>
+  <div class="grid">
+   <div class="game-card"><h3>🧠 Company Trivia</h3><p class="muted small">10 multiple-choice questions.</p><button data-game="trivia">Play trivia</button></div>
+   <div class="game-card"><h3>👀 Who's That?</h3><p class="muted small">Guess a fictional colleague profile. No photos required.</p><button data-game="who">Play guessing</button></div>
+   <div class="game-card"><h3>🔤 Word Battle</h3><p class="muted small">Unscramble workplace words.</p><button data-game="word">Play words</button></div>
+   <div class="game-card"><h3>✈️ Flight Bingo</h3><p class="muted small">A quiet, observation-only bingo card.</p><button data-game="bingo">Play bingo</button></div>
+   <div class="game-card"><h3>⚡ Reaction Challenge</h3><p class="muted small">Test your visual reaction time.</p><button data-game="reaction">Play reaction</button></div>
+  </div>
+ </div>
+ <div id="gameArea" class="panel hidden" aria-live="polite"></div>
+</section>
+
+<section id="teams" class="tab hidden">
+ <div class="panel">
+  <h2>Ten automatic squads</h2><p class="muted small">Squads are assigned locally. This is a team theme, not a shared live leaderboard: devices do not communicate in flight.</p>
+  <div id="teamList"></div>
+ </div>
+</section>
+
+<section id="score" class="tab hidden">
+ <div class="panel">
+  <h2>Your championship result</h2>
+  <div class="grid">
+   <div class="stat"><span class="muted small">Nickname</span><strong id="scoreNick">—</strong></div>
+   <div class="stat"><span class="muted small">Squad</span><strong id="scoreTeam">—</strong></div>
+   <div class="stat"><span class="muted small">Total points</span><strong id="scoreTotal">0</strong></div>
+   <div class="stat"><span class="muted small">Games completed</span><strong id="scoreGames">0</strong></div>
+  </div>
+  <p class="muted small">Create a QR result card to show the organiser after landing. It contains your nickname, squad and score only.</p>
+  <div class="actions"><button id="makeQR">Generate result QR</button><button class="secondary" id="downloadResult">Download result file</button></div>
+  <div id="qrWrap" class="hidden" style="margin-top:16px;text-align:center">
+   <canvas id="qrCanvas" width="256" height="256" aria-label="QR result code"></canvas>
+   <p class="small muted">Show this code to the organiser after landing.</p>
+   <p id="qrFallback" class="small"></p>
+  </div>
+ </div>
+ <div class="panel"><h3>Game breakdown</h3><div id="breakdown" class="muted small">No games played yet.</div></div>
+</section>
+
+<section id="guide" class="tab hidden">
+ <div class="panel">
+  <h2>Prepare before the flight</h2>
+  <ol class="muted">
+   <li>Open this app while you still have Internet.</li>
+   <li>Use your browser's Add to Home Screen / Install option.</li>
+   <li>Open every game once so assets are ready.</li>
+   <li>Test with airplane mode on and Wi-Fi/Bluetooth off.</li>
+   <li>Save your nickname and squad before boarding.</li>
+  </ol>
+  <div class="notice"><strong>Important:</strong> This app itself makes no network, Wi-Fi, Bluetooth, hotspot or mobile-data connection. It cannot disable your phone radios. Follow Ryanair crew instructions and do not switch on radios for this game.</div>
+  <h3 style="margin-top:18px">After landing</h3>
+  <p class="muted">Generate your QR code or download your result file. The organiser can scan or collect the results and combine squad scores.</p>
+  <div class="actions"><button class="secondary" id="installHelp">Installation instructions</button><button class="ghost" id="resetAll">Reset this device's game data</button></div>
+  <p id="guideMsg" class="small muted"></p>
+ </div>
+</section>
+</main>
+<footer>FLIGHT MODE GAMES · Built for offline play · No account · No analytics · No network gameplay</footer>
+<script src="qrcode.min.js"></script>
+<script src="app.js"></script>
+</body></html>

@@ -1,0 +1,17 @@
+{
+  "name": "FLIGHT MODE GAMES",
+  "short_name": "Flight Games",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b1426",
+  "theme_color": "#101b32",
+  "description": "An offline team championship for the journey.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
